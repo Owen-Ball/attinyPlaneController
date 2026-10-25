@@ -17,8 +17,8 @@ PID elev(.8, .5, .125);
 PID ail(.8, .5, .125);
 PID rud(2, 0, 0);
 
-//Buzzer buzzer(BUZ_PIN);
-Buzzer buzzer(PIN_PA6);
+Buzzer buzzer(BUZ_PIN);
+//Buzzer buzzer(PIN_PA6);
 
 bool armed = false;
 
@@ -47,5 +47,5 @@ void loop() {
   buzzer.runBuzzer(t);
 
   runIMU(loop_time);
-  Serial1.println(loop_time);
+  Serial1.println("hi");
 }
