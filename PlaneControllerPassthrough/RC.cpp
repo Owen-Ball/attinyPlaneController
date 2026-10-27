@@ -18,7 +18,9 @@ int prev_count;
 
 static long prev_time;
 
-uint8_t inData[16];
+#define NUM_CHANNELS 12
+
+uint8_t inData[NUM_CHANNELS * 2];
 uint8_t inByte;
 
 bool RC_connected;
@@ -43,7 +45,7 @@ void initRC(HardwareSerial &port){
   rc_serial = &port;
   prev_count = 0;
   RC_connected = false;
-  for (uint8_t i = 0; i <= 15; i++){
+  for (uint8_t i = 0; i < NUM_CHANNELS*2; i++){
     inData[i] = 0;
   }
 }
@@ -51,27 +53,27 @@ void initRC(HardwareSerial &port){
 void runRC(long t){
   packet_count = rc_serial->available();
   if (prev_count == packet_count) {
-     for (int i = 0; i < (packet_count % 16); i++) rc_serial->read();
+     for (int i = 0; i < (packet_count % (NUM_CHANNELS*2)); i++) rc_serial->read();
   }
   prev_count = packet_count;
-  while (rc_serial->available() >= 16){
-    for (uint8_t i = 0; i <= 15; i++){
+  while (rc_serial->available() >= NUM_CHANNELS*2){
+    for (uint8_t i = 0; i < NUM_CHANNELS*2; i++){
       inByte = rc_serial->read();
       inData[i] = inByte;
     }
     prev_time = t;
   }
-  RC_connected = (t-prev_time) < 50000;
+  RC_connected = (t-prev_time) < 100000;
 
-  /*
-  for (int i = 0; i <= 15; i++){
+  
+  for (int i = 0; i < NUM_CHANNELS*2; i++){
     rc_serial->print(inData[i]);
     rc_serial->print("\t");
   }
   rc_serial->print(RC_connected);
   rc_serial->print("\t");
   rc_serial->println();
-  */
+  
 }
 
 float getElevator(){
